@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@realdarkkenz | Bio Link</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ==========================================
+       CẤU HÌNH MÀU SẮC & GIAO DIỆN CHÍNH
+       ========================================== */
+    :root {
+      --neon-color: #a855f7;
+      --neon-glow: rgba(168, 85, 247, 0.55);
+      --neon-secondary: #06b6d4;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: #060609;
+      color: #f8fafc;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Hình nền động lưới Cyberpunk & hạt sáng */
+    .cyber-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: 
+        radial-gradient(circle at 20% 25%, rgba(168, 85, 247, 0.16), transparent 40%),
+        radial-gradient(circle at 80% 75%, rgba(6, 182, 212, 0.14), transparent 40%),
+        linear-gradient(180deg, #040407 0%, #0b0914 100%);
+    }
+
+    .cyber-grid {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(circle at center, black 45%, transparent 90%);
+      -webkit-mask-image: radial-gradient(circle at center, black 45%, transparent 90%);
+    }
+
+    /* Màn hình chờ Click to Enter */
+    #enterOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(5, 5, 8, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.65s ease, visibility 0.65s ease;
+    }
+
+    #enterOverlay.hidden-overlay {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .pulse-text {
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.2em;
+      text-shadow: 0 0 15px var(--neon-glow), 0 0 30px var(--neon-glow);
+      animation: pulseGlow 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.55; transform: scale(0.98); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+
+    /* Thẻ Card 3D Glassmorphism */
+    .tilt-wrapper {
+      perspective: 1100px;
+      width: 100%;
+      max-width: 440px;
+      padding: 1.25rem;
+      z-index: 10;
+    }
+
+    .bio-card {
+      background: rgba(15, 15, 24, 0.68);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 24px;
+      padding: 2rem 1.75rem;
+      box-shadow: 
+        0 25px 55px -12px rgba(0, 0, 0, 0.85),
+        0 0 35px -8px var(--neon-glow);
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bio-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 200%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-color), var(--neon-secondary), transparent);
+      opacity: 0.85;
+    }
+
+    /* Vòng xoay Neon quanh Avatar */
+    .avatar-container {
+      position: relative;
+      width: 108px;
+      height: 108px;
+      margin: 0 auto;
+    }
+
+    .avatar-ring {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--neon-color), var(--neon-secondary), transparent 65%, var(--neon-color));
+      animation: spinRing 4s linear infinite;
+      filter: drop-shadow(0 0 10px var(--neon-glow));
+    }
+
+    @keyframes spinRing {
+      100% { transform: rotate(360deg); }
+    }
+
+    .avatar-img {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #0b0b12;
+      z-index: 2;
+    }
+
+    .status-dot {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      width: 20px;
+      height: 20px;
+      background: #22c55e;
+      border: 3.5px solid #0f0f18;
+      border-radius: 50%;
+      z-index: 3;
+      box-shadow: 0 0 10px #22c55e;
+    }
+
+    /* Tên & Hiệu ứng phát sáng */
+    .username-glow {
+      text-shadow: 0 0 14px var(--neon-glow);
+    }
+
+    /* Huy hiệu (Badges) */
+    .badge-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      margin-top: 0.65rem;
+    }
+
+    .badge-item {
+      position: relative;
+      color: #e2e8f0;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .badge-item:hover {
+      color: var(--neon-color);
+      transform: translateY(-2px) scale(1.15);
+      filter: drop-shadow(0 0 8px var(--neon-glow));
+    }
+
+    .badge-item::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 135%;
+      left: 50%;
+      transform: translateX(-50%) scale(0.85);
+      background: #11111b;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      padding: 0.25rem 0.55rem;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.18s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+
+    .badge-item:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    /* Nút mạng xã hội */
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0.85rem 1.15rem;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 14px;
+      color: #f1f5f9;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .social-btn:hover {
+      background: rgba(168, 85, 247, 0.12);
+      border-color: var(--neon-color);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -6px var(--neon-glow);
+    }
+
+    /* Nút bật/tắt nhạc góc dưới */
+    .audio-control {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 50;
+      background: rgba(15, 15, 24, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.6rem 0.9rem;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .audio-control:hover {
+      border-color: var(--neon-color);
+      box-shadow: 0 0 15px var(--neon-glow);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nền lưới Cyberpunk & Canvas Hạt sáng -->
+  <div class="cyber-bg"></div>
+  <div class="cyber-grid"></div>
+  <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+  <!-- Màn hình chờ Click to Enter -->
+  <div id="enterOverlay" onclick="enterSite()">
+    <div class="text-center px-4">
+      <p class="pulse-text text-lg md:text-xl font-bold text-white uppercase">[ click to enter ]</p>
+      <p class="text-xs text-slate-400 mt-3 font-mono">Bật âm thanh & Trải nghiệm Bio 3D</p>
+    </div>
+  </div>
+
+  <!-- Nút điều khiển Nhạc nền (Góc trái dưới) -->
+  <button id="audioBtn" onclick="toggleAudio()" class="audio-control text-xs font-mono text-slate-300">
+    <i id="audioIcon" class="fa-solid fa-volume-high text-purple-400"></i>
+    <span id="audioStatus">Đang phát nhạc</span>
+  </button>
+
+  <!-- Nhạc nền tự động (Bạn có thể thay đổi link file .mp3 tại thuộc tính src bên dưới) -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=cyberpunk-2099-10701.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Khung Thẻ Bio Chính -->
+  <div class="tilt-wrapper">
+    <div id="bioCard" class="bio-card text-center">
+      
+      <!-- Lượt xem & Địa điểm -->
+      <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-3">
+        <span class="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
+          <i class="fa-regular fa-eye text-purple-400"></i>
+          <span id="viewCounter">1,428</span>
+        </span>
+        <span class="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
+          <i class="fa-solid fa-location-dot text-cyan-400"></i>
+          <span>Da Nang, VN</span>
+        </span>
+      </div>
+
+      <!-- Ảnh đại diện (Thay link ảnh tại thuộc tính src) -->
+      <div class="avatar-container">
+        <div class="avatar-ring"></div>
+        <img 
+          src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400&auto=format&fit=crop" 
+          alt="Avatar" 
+          class="avatar-img"
+        />
+        <span class="status-dot" title="Online"></span>
+      </div>
+
+      <!-- Tên hiển thị -->
+      <h1 class="text-2xl font-bold tracking-wide mt-4 username-glow flex items-center justify-center gap-1.5">
+        <span>RealDarkKenz</span>
+        <i class="fa-solid fa-circle-check text-purple-400 text-base" title="Verified"></i>
+      </h1>
+
+      <!-- Các huy hiệu (Badges) -->
+      <div class="badge-box">
+        <span class="badge-item" data-tooltip="Developer"><i class="fa-solid fa-code text-purple-400"></i></span>
+        <span class="badge-item" data-tooltip="Early Supporter"><i class="fa-solid fa-gem text-pink-400"></i></span>
+        <span class="badge-item" data-tooltip="Gamer"><i class="fa-solid fa-gamepad text-cyan-400"></i></span>
+        <span class="badge-item" data-tooltip="VIP Member"><i class="fa-solid fa-crown text-amber-400"></i></span>
+      </div>
+
+      <!-- Chữ chạy tự động Typewriter -->
+      <div class="mt-3 h-6 flex items-center justify-center">
+        <p class="text-sm font-mono text-slate-300">
+          <span id="typewriterText"></span><span class="text-purple-400 animate-pulse">|</span>
+        </p>
+      </div>
+
+      <!-- Khung trạng thái Discord Rich Presence -->
+      <div class="mt-5 p-3 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center gap-3.5 text-left">
+        <div class="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-white/10">
+          <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=200&auto=format&fit=crop" alt="Activity" class="w-full h-full object-cover" />
+        </div>
+        <div class="overflow-hidden flex-1">
+          <div class="flex items-center gap-1.5">
+            <i class="fa-brands fa-discord text-indigo-400 text-xs"></i>
+            <span class="text-[11px] font-mono uppercase tracking-wider text-indigo-300 font-semibold">Playing a game</span>
+          </div>
+          <p class="text-sm font-semibold text-white truncate">Visual Studio Code</p>
+          <p class="text-xs text-slate-400 truncate font-mono">Editing index.html • 02:14 elapsed</p>
+        </div>
+      </div>
+
+      <!-- Danh sách Nút Mạng Xã Hội (Thay đổi href="..." thành link của bạn) -->
+      <div class="mt-5 space-y-2.5">
+        <a href="https://discord.com" target="_blank" rel="noopener noreferrer" class="social-btn">
+          <div class="flex items-center gap-3">
+            <i class="fa-brands fa-discord text-lg text-indigo-400 w-5 text-center"></i>
+            <span class="font-medium text-sm">Discord Server</span>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400"></i>
+        </a>
+
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-btn">
+          <div class="flex items-center gap-3">
+            <i class="fa-brands fa-github text-lg text-slate-200 w-5 text-center"></i>
+            <span class="font-medium text-sm">GitHub Profile</span>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400"></i>
+        </a>
+
+        <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" class="social-btn">
+          <div class="flex items-center gap-3">
+            <i class="fa-brands fa-tiktok text-lg text-pink-400 w-5 text-center"></i>
+            <span class="font-medium text-sm">TikTok Official</span>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400"></i>
+        </a>
+
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-btn">
+          <div class="flex items-center gap-3">
+            <i class="fa-brands fa-facebook text-lg text-blue-400 w-5 text-center"></i>
+            <span class="font-medium text-sm">Facebook Cá Nhân</span>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400"></i>
+        </a>
+      </div>
+
+      <!-- Chân trang nhỏ -->
+      <p class="mt-6 text-[11px] font-mono text-slate-500">
+        © 2026 RealDarkKenz • Powered by GitHub Pages
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // ====================================================
+    // 1. DANH SÁCH CÂU CHỮ CHẠY TỰ ĐỘNG (SỬA TẠI ĐÂY)
+    // ====================================================
+    const bioQuotes = [
+      "Full-stack Developer & Cyberpunk Enthusiast ⚡",
+      "Welcome to my personal bio link 🌐",
+      "Code. Sleep. Game. Repeat. 🎮"
+    ];
+
+    let quoteIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const typeTarget = document.getElementById("typewriterText");
+
+    function runTypewriter() {
+      const currentQuote = bioQuotes[quoteIndex];
+      if (isDeleting) {
+        typeTarget.textContent = currentQuote.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        typeTarget.textContent = currentQuote.substring(0, charIndex + 1);
+        charIndex++;
+      }
+
+      let speed = isDeleting ? 35 : 75;
+
+      if (!isDeleting && charIndex === currentQuote.length) {
+        speed = 2000;
+        isDeleting = true;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        quoteIndex = (quoteIndex + 1) % bioQuotes.length;
+        speed = 400;
+      }
+
+      setTimeout(runTypewriter, speed);
+    }
+    runTypewriter();
+
+    // ====================================================
+    // 2. XỬ LÝ CLICK TO ENTER & PHÁT NHẠC
+    // ====================================================
+    const overlay = document.getElementById("enterOverlay");
+    const bgMusic = document.getElementById("bgMusic");
+    const audioIcon = document.getElementById("audioIcon");
+    const audioStatus = document.getElementById("audioStatus");
+
+    function enterSite() {
+      overlay.classList.add("hidden-overlay");
+      bgMusic.volume = 0.45;
+      bgMusic.play().catch(() => {
+        audioIcon.className = "fa-solid fa-volume-xmark text-slate-400";
+        audioStatus.textContent = "Nhạc đang tắt";
+      });
+    }
+
+    function toggleAudio() {
+      if (bgMusic.paused) {
+        bgMusic.play();
+        audioIcon.className = "fa-solid fa-volume-high text-purple-400";
+        audioStatus.textContent = "Đang phát nhạc";
+      } else {
+        bgMusic.pause();
+        audioIcon.className = "fa-solid fa-volume-xmark text-slate-400";
+        audioStatus.textContent = "Nhạc đang tắt";
+      }
+    }
+
+    // ====================================================
+    // 3. HIỆU ỨNG NGHIÊNG THẺ 3D (3D TILT EFFECT)
+    // ====================================================
+    const card = document.getElementById("bioCard");
+    document.addEventListener("mousemove", (e) => {
+      const rect = card.getBoundingClientRect();
+      const cardCenterX = rect.left + rect.width / 2;
+      const cardCenterY = rect.top + rect.height / 2;
+      const deltaX = e.clientX - cardCenterX;
+      const deltaY = e.clientY - cardCenterY;
+
+      const rotateX = Math.max(-10, Math.min(10, -deltaY / 28));
+      const rotateY = Math.max(-10, Math.min(10, deltaX / 28));
+
+      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    document.addEventListener("mouseleave", () => {
+      card.style.transform = "rotateX(0deg) rotateY(0deg)";
+    });
+
+    // ====================================================
+    // 4. HIỆU ỨNG HẠT SÁNG LƠ LỬNG Ở NỀN SAU
+    // ====================================================
+    const canvas = document.getElementById("particleCanvas");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    for (let i = 0; i < 45; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.8 + 0.5,
+        dx: (Math.random() - 0.5) * 0.4,
+        dy: (Math.random() - 0.5) * 0.4,
+        alpha: Math.random() * 0.6 + 0.2
+      });
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(168, 85, 247, ${p.alpha})`;
+        ctx.fill();
+
+        p.x += p.dx;
+        p.y += p.dy;
+
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+      });
+      requestAnimationFrame(drawParticles);
+    }
+    drawParticles();
+  </script>
+</body>
+</html>
