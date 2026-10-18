@@ -8,9 +8,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
-    /* ==========================================
-       CẤU HÌNH MÀU SẮC & GIAO DIỆN VỪA KHÍT MÀN HÌNH
-       ========================================== */
     :root {
       --neon-color: #a855f7;
       --neon-glow: rgba(168, 85, 247, 0.45);
@@ -30,14 +27,13 @@
       color: #f8fafc;
       height: 100vh;
       max-height: 100vh;
-      overflow: hidden; /* Cố định hoàn toàn không cho cuộn trang */
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
     }
 
-    /* Hình nền động lưới Cyberpunk & hạt sáng */
     .cyber-bg {
       position: fixed;
       inset: 0;
@@ -60,20 +56,19 @@
       -webkit-mask-image: radial-gradient(circle at center, black 45%, transparent 90%);
     }
 
-    /* Màn hình chờ Click to Enter */
     #enterOverlay {
       position: fixed;
       inset: 0;
-      z-index: 999;
-      background: rgba(5, 5, 8, 0.88);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      z-index: 99999;
+      background: rgba(5, 5, 8, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: opacity 0.65s ease, visibility 0.65s ease;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
     }
 
     #enterOverlay.hidden-overlay {
@@ -94,11 +89,10 @@
       50% { opacity: 1; transform: scale(1.03); }
     }
 
-    /* Thẻ Card 3D Vừa khít màn hình (Compact Fit) */
     .tilt-wrapper {
       perspective: 1100px;
       width: 100%;
-      max-width: 400px; /* Thu gọn chiều ngang một chút */
+      max-width: 400px;
       padding: 0.75rem;
       z-index: 10;
       max-height: 100vh;
@@ -113,7 +107,7 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.09);
       border-radius: 20px;
-      padding: 1.25rem 1.25rem; /* Giảm khoảng đệm (padding) để lùn và gọn lại */
+      padding: 1.25rem 1.25rem;
       box-shadow: 
         0 20px 45px -10px rgba(0, 0, 0, 0.85),
         0 0 25px -6px var(--neon-glow);
@@ -135,7 +129,6 @@
       opacity: 0.85;
     }
 
-    /* Vòng xoay Neon quanh Avatar (Thu nhỏ vừa vặn) */
     .avatar-container {
       position: relative;
       width: 82px;
@@ -179,12 +172,10 @@
       box-shadow: 0 0 8px #22c55e;
     }
 
-    /* Tên & Hiệu ứng phát sáng */
     .username-glow {
       text-shadow: 0 0 12px var(--neon-glow);
     }
 
-    /* Nút mạng xã hội (Gọn gàng, vừa khít) */
     .social-btn {
       display: flex;
       align-items: center;
@@ -208,7 +199,6 @@
       box-shadow: 0 6px 16px -4px var(--neon-glow);
     }
 
-    /* Nút bật/tắt nhạc góc dưới */
     .audio-control {
       position: fixed;
       bottom: 15px;
@@ -234,35 +224,29 @@
 </head>
 <body>
 
-  <!-- Nền lưới Cyberpunk & Canvas Hạt sáng -->
   <div class="cyber-bg"></div>
   <div class="cyber-grid"></div>
   <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
 
   <!-- Màn hình chờ Click to Enter -->
-  <div id="enterOverlay" onclick="enterSite()">
-    <div class="text-center px-4">
+  <div id="enterOverlay">
+    <div class="text-center px-4 pointer-events-none">
       <p class="pulse-text text-lg md:text-xl font-bold text-white uppercase">[ click to enter ]</p>
-      <p class="text-xs text-slate-400 mt-3 font-mono">Bật âm thanh & Trải nghiệm Bio 3D</p>
+      <p class="text-xs text-slate-400 mt-3 font-mono">Bấm chuột bất kỳ đâu để vào Bio</p>
     </div>
   </div>
 
-  <!-- Nút điều khiển Nhạc nền (Góc trái dưới) -->
   <button id="audioBtn" onclick="toggleAudio()" class="audio-control text-xs font-mono text-slate-300">
     <i id="audioIcon" class="fa-solid fa-volume-high text-purple-400"></i>
     <span id="audioStatus">Đang phát nhạc</span>
   </button>
 
-  <!-- Nhạc nền tự động -->
   <audio id="bgMusic" loop preload="auto">
     <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=cyberpunk-2099-10701.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- Khung Thẻ Bio Chính (Thu gọn vừa in trong 1 trang) -->
   <div class="tilt-wrapper">
     <div id="bioCard" class="bio-card text-center">
-      
-      <!-- Lượt xem (Căn giữa hoặc gọn gàng phía trên) -->
       <div class="flex items-center justify-center mb-2.5">
         <span class="flex items-center gap-1.5 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10 text-xs font-mono text-slate-400">
           <i class="fa-regular fa-eye text-purple-400"></i>
@@ -270,7 +254,6 @@
         </span>
       </div>
 
-      <!-- Ảnh đại diện -->
       <div class="avatar-container">
         <div class="avatar-ring"></div>
         <img 
@@ -281,20 +264,17 @@
         <span class="status-dot" title="Online"></span>
       </div>
 
-      <!-- Tên hiển thị -->
       <h1 class="text-xl font-bold tracking-wide mt-3 username-glow flex items-center justify-center gap-1.5">
-        <span>QuyPhong</span>
+        <span>painkiller</span>
         <i class="fa-solid fa-circle-check text-purple-400 text-sm" title="Verified"></i>
       </h1>
 
-      <!-- Chữ chạy tự động Typewriter -->
       <div class="mt-1 h-5 flex items-center justify-center">
         <p class="text-xs font-mono text-slate-300">
           <span id="typewriterText"></span><span class="text-purple-400 animate-pulse">|</span>
         </p>
       </div>
 
-      <!-- Danh sách Nút Mạng Xã Hội (Vừa khít, không dài) -->
       <div class="mt-3.5 space-y-2">
         <a href="https://discord.com/channels/@me" target="_blank" rel="noopener noreferrer" class="social-btn">
           <div class="flex items-center gap-2.5">
@@ -329,7 +309,6 @@
         </a>
       </div>
 
-      <!-- Chân trang nhỏ -->
       <p class="mt-4 text-[10px] font-mono text-slate-500">
         © 2026 • painkiller
       </p>
@@ -337,11 +316,8 @@
   </div>
 
   <script>
-    // ====================================================
-    // 1. CHỮ CHẠY TỰ ĐỘNG TYPEWRITER
-    // ====================================================
     const bioQuotes = [
-      "Nothing lasts forever, everything will change one day."
+      "Nothing lasts forever, everything will change one day.",
       "Welcome to my personal bio link 🌐"
       
     ];
@@ -376,15 +352,13 @@
     }
     runTypewriter();
 
-    // ====================================================
-    // 2. CLICK TO ENTER & PHÁT NHẠC
-    // ====================================================
     const overlay = document.getElementById("enterOverlay");
     const bgMusic = document.getElementById("bgMusic");
     const audioIcon = document.getElementById("audioIcon");
     const audioStatus = document.getElementById("audioStatus");
 
     function enterSite() {
+      if (overlay.classList.contains("hidden-overlay")) return;
       overlay.classList.add("hidden-overlay");
       bgMusic.volume = 0.45;
       bgMusic.play().catch(() => {
@@ -392,6 +366,9 @@
         audioStatus.textContent = "Nhạc đang tắt";
       });
     }
+
+    // Gắn sự kiện click toàn cục cho overlay để chắc chắn 100% ăn click
+    overlay.addEventListener("click", enterSite);
 
     function toggleAudio() {
       if (bgMusic.paused) {
@@ -405,9 +382,6 @@
       }
     }
 
-    // ====================================================
-    // 3. HIỆU ỨNG NGHIÊNG THẺ 3D (3D TILT EFFECT)
-    // ====================================================
     const card = document.getElementById("bioCard");
     document.addEventListener("mousemove", (e) => {
       const rect = card.getBoundingClientRect();
@@ -426,9 +400,6 @@
       card.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
 
-    // ====================================================
-    // 4. HIỆU ỨNG HẠT SÁNG LƠ LỬNG Ở NỀN SAU
-    // ====================================================
     const canvas = document.getElementById("particleCanvas");
     const ctx = canvas.getContext("2d");
     let particles = [];
@@ -453,7 +424,7 @@
 
     function drawParticles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.pages = particles.forEach((p) => {
+      particles.forEach((p) => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(168, 85, 247, ${p.alpha})`;
@@ -471,9 +442,6 @@
     }
     drawParticles();
 
-    // ====================================================
-    // 5. BỘ ĐẾM LƯỢT XEM THẬT (REAL-TIME VIEW COUNTER)
-    // ====================================================
     async function updateRealViews() {
       const counterEl = document.getElementById("viewCounter");
       if (!counterEl) return;
